@@ -1,8 +1,30 @@
 body {
   background-image: url(https://phonoteka.org/uploads/posts/2022-01/1642653187_29-phonoteka-org-p-odnotonnie-kartinki-dlya-fona-31.jpg);
 }
+.container-header {
+  max-width: 1400;
+  display: flex;
+  flex-direction: column;
+  background: rgb(121, 128, 203);
+  background: radial-gradient(
+    circle,
+    rgba(121, 128, 203, 1) 0%,
+    rgba(72, 24, 175, 0.5383403361344538) 97%
+  );
+  box-shadow: 0 25px 28px rgba(15, 4, 81, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  border-bottom: 10px;
+  padding-top: 30;
+  padding-bottom: 30;
+}
+.header-section {
+  width: 100vmax;
+  position: sticky;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
 
-.search-form__container {
+.search-form {
   position: relative;
   display: block;
   width: 300px;
@@ -45,18 +67,16 @@ body {
 }
 
 .container {
-  max-width: auto;
+  display: flex;
+  max-width: 1400;
+  flex-direction: column;
+  align-items: center;
+
+  min-width: 100%;
+  max-width: 1400px;
+
   margin-left: auto;
   margin-right: auto;
-  padding: 30px;
-  background: rgb(121, 128, 203);
-  background: radial-gradient(
-    circle,
-    rgba(121, 128, 203, 1) 0%,
-    rgba(72, 24, 175, 0.5383403361344538) 97%
-  );
-  box-shadow: 0 25px 28px rgba(15, 4, 81, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-  border-bottom: 10px;
 }
 
 .search-form__icon {
@@ -77,4 +97,128 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+.gallery-container {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.gallery {
+  max-width: 1400px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-auto-rows: 250px;
+  gap: 10px;
+
+  @media screen and (max-width: 550px) {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    grid-auto-rows: 150px;
+    gap: 5px;
+  }
+}
+
+.photo-card__large {
+  grid-row: span 2 / auto;
+}
+.photo-card__small {
+  grid-column: span 2 / auto;
+}
+
+.photo-card {
+  position: relative;
+
+  overflow: hidden;
+
+  box-shadow: 1px 1px 2px 1px rgba(93, 93, 93, 0.75);
+  border-radius: 3px;
+  border: 2px solid rgba(255, 255, 255, 0.356);
+}
+
+.gallery__item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 120%;
+  height: 120%;
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  transition: width 400ms, height 400ms;
+}
+.img {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 120%;
+  height: 120%;
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  transition: width 400ms, height 400ms;
+
+  &:hover,
+  &:focus {
+    width: 100%;
+    height: 100%;
+  }
+}
+.info {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  width: 100%;
+  height: 100%;
+  padding: 8px 7px;
+
+  color: white;
+}
+.info::after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  content: '';
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+
+  transform: translateX(-100%) translateY(100%);
+
+  transition: transform 400ms;
+
+  // .photo-card:hover &,
+  // .photo-card:focus & {
+  //   transform: translateX(0) translateY(0);
+  // }
+}
+.info-item {
+  transform: translateX(-120px);
+
+  transition: transform 300ms;
+
+  z-index: 1;
+
+  &:not(:first-child) {
+    margin-top: 6px;
+
+    @media screen and (max-width: 550px) {
+      margin-top: 4px;
+    }
+  }
+}
+.photo-card:hover .info-item {
+  transform: translateX(0);
 }
