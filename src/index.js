@@ -1,29 +1,39 @@
 import PicApiFetcher from './js/fetch';
+
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import LoadMoreBtn from './js/button';
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
+});
+
+const loadMoreBtn = new LoadMoreBtn({
+  selector: '[data-action="load-more"]',
+  hidden: true,
 });
 
 const picApiFetcher = new PicApiFetcher();
 
 const refs = {
   searchFormEl: document.querySelector('.search-form'),
-  loadBtn: document.querySelector('.load-btn'),
+  //   loadBtn: document.querySelector('.load-btn'),
   submitBtn: document.querySelector('.search-form__btn'),
   cardEl: document.querySelector('.gallery'),
 };
 
 refs.searchFormEl.addEventListener('submit', onSubmitSearchBtn);
-refs.loadBtn.addEventListener('click', onLoad);
+loadMoreBtn.refs.showBtn.addEventListener('click', onLoad);
 
 function onSubmitSearchBtn(e) {
   e.preventDefault();
 
   picApiFetcher.query = e.currentTarget.elements.searchQuery.value.trim();
   picApiFetcher.resetPage();
+  clearPicContainer();
+  loadMoreBtn.show();
+  loadMoreBtn.disable();
 
   picApiFetcher
     .fetchGalleryItem()
@@ -35,7 +45,8 @@ function onSubmitSearchBtn(e) {
         );
       } else {
         createMarkup(data.hits);
-        // foundImg();
+        loadMoreBtn.enable();
+
         lightbox.refresh();
         Notify.success(`Hooray! We found ${data.totalHits} images.`);
       }
@@ -44,7 +55,7 @@ function onSubmitSearchBtn(e) {
 }
 
 function onLoad(e) {
-  picApiFetcher.fetchGalleryItem().then(data => console.log(data));
+  picApiFetcher.fetchGalleryItem().then(data => createMarkup(data.hits));
 }
 
 function createMarkup(arr) {
@@ -67,13 +78,13 @@ function createMarkup(arr) {
             ? 'photo-card photo-card__small'
             : index === 2
             ? 'photo-card photo-card__large'
-            : index === 8
+            : index === 9
             ? 'photo-card photo-card__small photo-card__large'
             : index === 17
             ? 'photo-card photo-card__small'
             : index === 20 || index === 25
             ? 'photo-card photo-card__large'
-            : index === 32
+            : index === 35
             ? 'photo-card photo-card__small'
             : 'photo-card';
 
@@ -105,4 +116,8 @@ function createMarkup(arr) {
     )
     .join('');
   refs.cardEl.insertAdjacentHTML('beforeend', markup);
+}
+
+function clearPicContainer() {
+  refs.cardEl.innerHTML = '';
 }
