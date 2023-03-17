@@ -32,9 +32,8 @@ function onSubmitSearchBtn(e) {
   picApiFetcher.query = e.currentTarget.elements.searchQuery.value.trim();
   picApiFetcher.resetPage();
   clearPicContainer();
-  loadMoreBtn.show();
-  loadMoreBtn.disable();
-
+  // loadMoreBtn.show();
+  // loadMoreBtn.disable();
   picApiFetcher
     .fetchGalleryItem()
     .then(data => {
@@ -42,11 +41,13 @@ function onSubmitSearchBtn(e) {
       if (data.hits.length === 0) {
         Notify.info(
           'Sorry, there are no images matching your search query. Please try again.'
+          // loadMoreBtn.disable();
         );
         loadMoreBtn.hide();
       } else {
         createMarkup(data.hits);
         loadMoreBtn.enable();
+        loadMoreBtn.show();
 
         lightbox.refresh();
         Notify.success(`Hooray! We found ${data.totalHits} images.`);
