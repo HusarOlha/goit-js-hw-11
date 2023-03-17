@@ -18,7 +18,6 @@ const picApiFetcher = new PicApiFetcher();
 
 const refs = {
   searchFormEl: document.querySelector('.search-form'),
-  //   loadBtn: document.querySelector('.load-btn'),
   submitBtn: document.querySelector('.search-form__btn'),
   cardEl: document.querySelector('.gallery'),
 };
@@ -29,11 +28,14 @@ loadMoreBtn.refs.showBtn.addEventListener('click', onLoad);
 function onSubmitSearchBtn(e) {
   e.preventDefault();
 
-  picApiFetcher.query = e.currentTarget.elements.searchQuery.value.trim();
+  const searchQuery = e.currentTarget.elements.searchQuery.value.trim();
+
+  picApiFetcher.query = searchQuery;
   picApiFetcher.resetPage();
   clearPicContainer();
-  // loadMoreBtn.show();
-  // loadMoreBtn.disable();
+  loadMoreBtn.show();
+  loadMoreBtn.disable();
+
   picApiFetcher
     .fetchGalleryItem()
     .then(data => {
@@ -41,33 +43,38 @@ function onSubmitSearchBtn(e) {
       if (data.hits.length === 0) {
         Notify.info(
           'Sorry, there are no images matching your search query. Please try again.'
-          // loadMoreBtn.disable();
         );
         loadMoreBtn.hide();
       } else {
         createMarkup(data.hits);
+
         loadMoreBtn.enable();
-        loadMoreBtn.show();
 
         lightbox.refresh();
         Notify.success(`Hooray! We found ${data.totalHits} images.`);
+
+        if (refs.cardEl.children.length >= data.totalHits) {
+          Notify.failure(
+            `We're sorry, but you've reached the end of search results.`
+          );
+          loadMoreBtn.hide();
+        }
       }
     })
     .catch(err => console.log(err.message));
 }
 
 function onLoad(e) {
-  //
+  loadMoreBtn.disable();
   picApiFetcher
     .fetchGalleryItem()
     .then(data => {
       createMarkup(data.hits);
 
       lightbox.refresh();
-      // loadMoreBtn.disable();
+      loadMoreBtn.enable();
 
       if (refs.cardEl.children.length >= data.totalHits) {
-        console.log(refs.cardEl.children.length);
         onEndOfSearch();
       }
     })
@@ -141,5 +148,5 @@ function clearPicContainer() {
 }
 function onEndOfSearch() {
   loadMoreBtn.hide();
-  Notify.info("We're sorry, but you've reached the end of search results.");
+  Notify.failure("We're sorry, but you've reached the end of search results.");
 }
